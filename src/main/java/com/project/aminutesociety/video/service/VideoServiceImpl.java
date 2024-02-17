@@ -65,6 +65,7 @@ public class VideoServiceImpl implements VideoService{
                         .categoryId(video.getCategory().getId())
                         .runTime(formatRunTime(video.getRunTime()))
                         .url(video.getUrl())
+                        .thumbail(video.getThumbnail())
                         .videoTitle(video.getTitle())
                         .build())
                 .collect(Collectors.toList());
@@ -120,6 +121,7 @@ public class VideoServiceImpl implements VideoService{
                     .videoId(selectedVideo.getId())
                     .runTime(formatRunTime(selectedVideo.getRunTime()))
                     .url(selectedVideo.getUrl())
+                    .thumbail(selectedVideo.getThumbnail())
                     .videoTitle(selectedVideo.getTitle())
                     .build();
 
@@ -172,6 +174,7 @@ public class VideoServiceImpl implements VideoService{
                         .categoryId(video.getCategory().getId())
                         .runTime(formatRunTime(video.getRunTime()))
                         .url(video.getUrl())
+                        .thumbail(video.getThumbnail())
                         .videoTitle(video.getTitle())
                         .build())
                 .collect(Collectors.toList());

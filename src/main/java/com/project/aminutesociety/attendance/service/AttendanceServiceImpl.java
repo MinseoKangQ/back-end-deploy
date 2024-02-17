@@ -155,6 +155,7 @@ public class AttendanceServiceImpl implements AttendanceService{
                     .categoryId(video.getCategory().getId())
                     .isScrap(isScrap)
                     .url(video.getUrl())
+                    .thumbnail(video.getThumbnail())
                     .title(video.getTitle())
                     .build();
 
