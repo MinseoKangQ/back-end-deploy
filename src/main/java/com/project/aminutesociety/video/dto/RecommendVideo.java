@@ -22,6 +22,7 @@ public class RecommendVideo {
             private Long videoId;
             private String runTime;
             private String url;
+            private String thumbail;
             private String videoTitle;
         }
     }

@@ -31,6 +31,9 @@ public class Video extends BaseEntity {
     @Column(columnDefinition = "TEXT", name = "url")
     private String url; // 영상이 실제로 존재하는 S3 경로
 
+    @Column(name = "video_thumbnail")
+    private String thumbnail; // 영상이 보여지는 썸네일 
+
     @Column(name = "video_title")
     private String title; // 영상 제목
 

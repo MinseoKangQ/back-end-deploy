@@ -15,6 +15,7 @@ public class MyPageDetailResDto {
     private Long videoId;
     private Long categoryId;
     private String url;
+    private String thumbnail;
     private String title;
     private boolean isScrap;
 }
