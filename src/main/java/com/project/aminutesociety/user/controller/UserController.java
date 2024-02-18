@@ -1,5 +1,6 @@
 package com.project.aminutesociety.user.controller;
 
+import com.project.aminutesociety.timecalculator.service.TimeCalculatorService;
 import com.project.aminutesociety.user.dto.ChangeTimeDto;
 import com.project.aminutesociety.user.dto.UserLoginRequestDto;
 import com.project.aminutesociety.user.dto.UserSignUpDto;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+
     @GetMapping("")
     public String hello() {
         return "hello";
