@@ -41,9 +41,11 @@ public class Video extends BaseEntity {
     @JoinColumn(name = "category_id")
     private Category category; // 카테고리 FK
 
+    @Builder.Default
     @OneToMany(mappedBy = "video", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Scrap> scraps = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "video", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<AttendanceVideo> attendanceVideos = new ArrayList<>(); // 출석
 }

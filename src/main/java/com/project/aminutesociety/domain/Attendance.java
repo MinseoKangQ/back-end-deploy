@@ -29,6 +29,7 @@ public class Attendance extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user; // 유저 FK
 
+    @Builder.Default
     @OneToMany(mappedBy = "attendance", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<AttendanceVideo> attendanceVideos = new ArrayList<>(); // 시청한 영상
 

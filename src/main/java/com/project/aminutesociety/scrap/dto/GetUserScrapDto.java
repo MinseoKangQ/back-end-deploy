@@ -13,6 +13,7 @@ public class GetUserScrapDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Res {
+        @Builder.Default
         List<ScrapList> scraps = new ArrayList<>();
 
         @Getter
