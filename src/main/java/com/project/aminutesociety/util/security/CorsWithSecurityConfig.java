@@ -21,15 +21,4 @@ public class CorsWithSecurityConfig implements WebMvcConfigurer {
                 .allowCredentials(true);
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // CSRF 설정을 비활성화하는 새로운 방식
-        http
-                .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화
-                .authorizeRequests(authorize -> authorize
-                        .anyRequest().permitAll()); // 모든 요청 수락
-
-        return http.build();
-    }
-
 }
