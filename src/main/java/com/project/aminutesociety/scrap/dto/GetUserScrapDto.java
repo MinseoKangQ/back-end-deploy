@@ -26,6 +26,7 @@ public class GetUserScrapDto {
             private String videoTitle;
             private String videoRunTime;
             private String url;
+            private String thumbnail;
 
             public static ScrapList EntityToDto(Scrap scrap) {
                 return ScrapList.builder()
@@ -33,6 +34,7 @@ public class GetUserScrapDto {
                         .videoId(scrap.getVideo().getId())
                         .videoTitle(scrap.getVideo().getTitle())
                         .url(scrap.getVideo().getUrl())
+                        .thumbnail(scrap.getVideo().getThumbnail())
                         .videoRunTime(formatRunTime(scrap.getVideo().getRunTime()))
                         .build();
             }
