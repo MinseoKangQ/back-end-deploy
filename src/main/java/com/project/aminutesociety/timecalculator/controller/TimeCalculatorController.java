@@ -17,10 +17,6 @@ public class TimeCalculatorController {
 
     private final TimeCalculatorService timeCalculatorService;
 
-    @GetMapping("")
-    public String hello(){
-        return "hello";
-    }
     @GetMapping("/get")
     public ResponseEntity<ApiResponse<?>> getTime(@RequestParam String distance, @RequestParam String arrive) {
         return timeCalculatorService.getTime(distance, arrive);
