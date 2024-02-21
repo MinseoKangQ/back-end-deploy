@@ -15,6 +15,7 @@ import com.project.aminutesociety.util.exception.EntityNotFoundException;
 import com.project.aminutesociety.util.response.ApiResponse;
 import com.project.aminutesociety.video.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.util.List;
 import static java.lang.Long.valueOf;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AttendanceServiceImpl implements AttendanceService{
     private final AttendanceRepository attendanceRepository;
@@ -46,7 +48,7 @@ public class AttendanceServiceImpl implements AttendanceService{
 
         // 날짜 중복 확인
         String date = formatDate();
-        Attendance attendance = attendanceRepository.findByDate(date);
+        Attendance attendance = attendanceRepository.findByUserAndDate(user, date);
 
         // 존재하지 않을 경우
         if(attendance == null) {
@@ -109,6 +111,7 @@ public class AttendanceServiceImpl implements AttendanceService{
         // 유저의 모든 출석 가져오기
         List<Attendance> attendances = attendanceRepository.findByUser(user);
 
+
         attendances.forEach( attendance -> {
             // Dto로 변환
             AttendanceResDto attendanceResDto = AttendanceResDto.builder()
@@ -137,7 +140,7 @@ public class AttendanceServiceImpl implements AttendanceService{
                 .orElseThrow(() -> new EntityNotFoundException(userId + "인 사용자는 존재하지 않습니다."));
 
         // 해당 날짜의 출석 정보 가져오기
-        Attendance attendance = attendanceRepository.findByDate(date);
+        Attendance attendance = attendanceRepository.findByUserAndDate(user, date);
         if (attendance == null) {
             throw new EntityNotFoundException(date + "일에 대한 출석 정보를 찾을 수 없습니다.");
         }
@@ -149,6 +152,7 @@ public class AttendanceServiceImpl implements AttendanceService{
         attendanceVideos.forEach( attendanceVideo -> {
             Video video = attendanceVideo.getVideo();
 
+            log.error(video.getTitle());
             // 스크랩  여부 설정
             boolean isScrap = scrapRepository.findByUserAndVideo(user, video).isPresent() ? true : false;
 
