@@ -119,8 +119,10 @@ public class AttendanceServiceImpl implements AttendanceService{
             attendanceResDtos.add(attendanceResDto);
         });
 
+        int saveTime = user.getSavedTime() == null ? 0 : user.getSavedTime();
+
         MyPageResDto myPageResDto = MyPageResDto.builder()
-                .totalTime(formatTimeIncludeHour(user.getSavedTime()))
+                .totalTime(formatTimeIncludeHour(saveTime))
                 .calendar(attendanceResDtos)
                 .build();
 
