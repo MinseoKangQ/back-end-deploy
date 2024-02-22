@@ -142,7 +142,8 @@ public class AttendanceServiceImpl implements AttendanceService{
         // 해당 날짜의 출석 정보 가져오기
         Attendance attendance = attendanceRepository.findByUserAndDate(user, date);
         if (attendance == null) {
-            throw new EntityNotFoundException(date + "일에 대한 출석 정보를 찾을 수 없습니다.");
+            ApiResponse<String> response = ApiResponse.createFailWithoutData(200, "해당 날짜의 기록이 정상적으로 조회되었습니다.");
+            return ResponseEntity.ok(response);
         }
 
         // 출석 정보에 연결된 모든 비디오 가져오기
