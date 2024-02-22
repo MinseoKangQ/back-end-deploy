@@ -30,7 +30,7 @@ public class GetUserScrapDto {
 
             public static ScrapList EntityToDto(Scrap scrap) {
                 return ScrapList.builder()
-                        .categoryId(scrap.getVideo().getId())
+                        .categoryId(scrap.getVideo().getCategory().getId())
                         .videoId(scrap.getVideo().getId())
                         .videoTitle(scrap.getVideo().getTitle())
                         .url(scrap.getVideo().getUrl())
