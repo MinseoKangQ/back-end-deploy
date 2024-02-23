@@ -39,10 +39,9 @@ public class VideoController {
                                             "                \"videoId\": 8,\n" +
                                             "                \"runTime\": \"00:05:00\",\n" +
                                             "                \"url\": \"https://a-minute-society.s3.ap-northeast-2.amazonaws.com/videos/example.mp4\",\n" +
-                                            "                \"thumbnail\": \"\",\n" +
+                                            "                \"thumbail\": \"\",\n" +
                                             "                \"videoTitle\": \"경제 제목4\"\n" +
-                                            "            },\n" +
-                                            "            ...\n" +
+                                            "            }\n" +
                                             "        ]\n" +
                                             "    },\n" +
                                             "    \"message\": \"영상 추천에 성공하였습니다.\"\n" +
@@ -60,12 +59,8 @@ public class VideoController {
     }
 
     @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "영상 추천 수정 성공",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = CustomApiResponse.class),
+            @ApiResponse(responseCode = "200", description = "영상 추천 수정 성공",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomApiResponse.class),
                             examples = @ExampleObject(
                                     value = "{\n" +
                                             "    \"status\": 200,\n" +
@@ -111,14 +106,13 @@ public class VideoController {
                                             "                \"categoryId\": 1,\n" +
                                             "                \"videoId\": 4,\n" +
                                             "                \"runTime\": \"00:08:00\",\n" +
-                                            "                \"url\": \"https://example.com/1/video4\",\n" +
-                                            "                \"thumbnail\": \"https://a-minute-society.s3.ap-northeast-2.amazonaws.com/thumbnail/test-thumbnail.png\",\n" +
+                                            "                \"url\": \"https://a-minute-society.s3.ap-northeast-2.amazonaws.com/videos/example.mp4\",\n" +
+                                            "                \"thumbail\": \"https://a-minute-society.s3.ap-northeast-2.amazonaws.com/+thumbnail/test-thumnail.png\",\n" +
                                             "                \"videoTitle\": \"IT 제목4\"\n" +
-                                            "            },\n" +
-                                            "            ...\n" +
+                                            "            }\n" +
                                             "        ]\n" +
                                             "    },\n" +
-                                            "    \"message\": \"홈에서 사용자 카테고리 기반의 영상 추천에 성공하였습니다.\"\n" +
+                                            "    \"message\": \"영상 추천에 성공하였습니다.\"\n" +
                                             "}"
                             )
                     )

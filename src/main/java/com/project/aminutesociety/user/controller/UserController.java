@@ -27,7 +27,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "회원가입 성공",
                     content = @Content(examples = @ExampleObject(value = "{\n    \"status\": 200,\n    \"data\": {\n        \"id\": 1,\n        \"userName\": \"유저이름\",\n        \"userId\": \"thisIsTestId\"\n    },\n    \"message\": \"회원가입이 정상적으로 처리되었습니다.\"\n}")
                     , schema = @Schema(implementation = CustomApiResponse.class))),
-            @ApiResponse(responseCode = "400", description = "이미 아이디가 존재합니다.",
+            @ApiResponse(responseCode = "400", description = "이미 존재하는 아이디일 경우",
                     content = @Content(examples = @ExampleObject(value = "{\n    \"status\": 400,\n    \"data\": null,\n    \"message\": \"이미 아이디가 존재합니다.\"\n}")
                     , schema = @Schema(implementation = CustomApiResponse.class))),
     })
@@ -40,10 +40,17 @@ public class UserController {
 
     // 로그인
     @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200", description = "로그인 성공",
-                    content = @Content(mediaType = "application/json", examples = @ExampleObject(value = "{\n" + "    \"status\": 200,\n" + "    \"data\": {\n" + "        \"id\": 1,\n" + "        \"userId\": \"유저이름\",\n" + "        \"userName\": \"thisIsTestId\"\n" + "    },\n" +  "    \"message\": \"로그인이 완료되었습니다.\"\n" + "}")
+            @ApiResponse(responseCode = "200", description = "로그인 성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = "{\n" + "    \"status\": 200,\n" + "    \"data\": {\n" + "        \"id\": 1,\n" + "        \"userId\": \"유저이름\",\n" + "        \"userName\": \"thisIsTestId\"\n" + "    },\n" +  "    \"message\": \"로그인이 완료되었습니다.\"\n" + "}")
                     , schema = @Schema(implementation = CustomApiResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404", description = "아이디가 존재하지 않거나 비밀번호가 일치하지 않을 경우",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomApiResponse.class),
+                            examples = {
+                                    @ExampleObject(name = "아이디가 존재하지 않을 경우", value = "{\n" + "    \"status\": 404,\n" + "    \"data\": null,\n" + "    \"message\": \"존재하지 않는 아이디입니다.\"\n" + "}"),
+                                    @ExampleObject(name = "비밀번호가 일치하지 않는 경우", value = "{\n" + "    \"status\": 404,\n" + "    \"data\": null,\n" + "    \"message\": \"비밀번호가 일치하지 않습니다.\"\n" + "}")
+                            }
+                    )
             )
     })
     @Operation(summary = "로그인")
@@ -55,6 +62,20 @@ public class UserController {
 
 
     // userId 존재 확인
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 조회 성공",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomApiResponse.class),
+                    examples = @ExampleObject(value = "{\n" + "    \"status\": 200,\n" + "    \"data\": {\n" + "        \"id\": 1,\n" + "        \"userId\": \"hello\",\n" + "        \"userName\": \"a\"\n" + "    },\n" + "    \"message\": \"마이페이지 API 호출 성공\"\n" + "}"
+                        )
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "사용자가 존재하지 않음",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomApiResponse.class),
+                    examples = @ExampleObject(value = "{\n" + "    \"status\": 404,\n" + "    \"data\": null,\n" + "    \"message\": \"해당 사용자는 존재하지 않습니다.\"\n" + "}"
+                        )
+                    )
+            )
+    })
     @Operation(summary = "userId로 유저 조회")
     @GetMapping("/{userId}")
     public ResponseEntity<CustomApiResponse<?>> checkUserId(@PathVariable String userId) {
@@ -79,6 +100,14 @@ public class UserController {
     }
 
     // 소요시간 변경
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "시간 설정이 완료되었습니다.",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomApiResponse.class),
+                    examples = @ExampleObject(value = "{\n" + "    \"status\": 200,\n" + "    \"data\": null,\n" + "    \"message\": \"시간 설정이 완료되었습니다.\"\n" + "}"
+                        )
+                    )
+            )
+    })
     @Operation(summary = "유저의 소요시간 변경")
     @PutMapping("/{userId}/change-time")
     public ResponseEntity<CustomApiResponse<?>> changeTime(@PathVariable String userId, @RequestBody ChangeTimeDto changeTimeDto) {
