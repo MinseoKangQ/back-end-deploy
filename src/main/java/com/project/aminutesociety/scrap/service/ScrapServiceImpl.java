@@ -8,7 +8,7 @@ import com.project.aminutesociety.scrap.repository.ScrapRepository;
 import com.project.aminutesociety.user.repository.UserRepository;
 import com.project.aminutesociety.util.exception.EntityDuplicatedException;
 import com.project.aminutesociety.util.exception.EntityNotFoundException;
-import com.project.aminutesociety.util.response.ApiResponse;
+import com.project.aminutesociety.util.response.CustomApiResponse;
 import com.project.aminutesociety.video.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +31,7 @@ public class ScrapServiceImpl implements ScrapService{
     private final VideoRepository videoRepository;
 
     @Override
-    public ResponseEntity<ApiResponse<?>> createScrap(String userId, Long videoId) {
+    public ResponseEntity<CustomApiResponse<?>> createScrap(String userId, Long videoId) {
 
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
@@ -50,13 +50,13 @@ public class ScrapServiceImpl implements ScrapService{
         scrapRepository.save(Scrap.createScrapEntity(user, video));
 
         // 응답 반환
-        ApiResponse<String> data = ApiResponse.createSuccessWithoutData(HttpStatus.CREATED.value(), "스크랩이 완료되었습니다.");
+        CustomApiResponse<String> data = CustomApiResponse.createSuccessWithoutData(HttpStatus.CREATED.value(), "스크랩이 완료되었습니다.");
         return ResponseEntity.status(HttpStatus.CREATED).body(data);
     }
 
     @Transactional
     @Override
-    public ResponseEntity<ApiResponse<?>> deleteScrap(String userId, Long videoId) {
+    public ResponseEntity<CustomApiResponse<?>> deleteScrap(String userId, Long videoId) {
 
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
@@ -68,7 +68,7 @@ public class ScrapServiceImpl implements ScrapService{
 
         // 스크랩되지 않은 영상이면 오류 발생
         if(scrapRepository.findByUserAndVideo(user, video).isEmpty()) {
-            ApiResponse<String> data = ApiResponse.createFailWithoutData(HttpStatus.BAD_REQUEST.value(), "스크랩하지 않은 영상입니다.");
+            CustomApiResponse<String> data = CustomApiResponse.createFailWithoutData(HttpStatus.BAD_REQUEST.value(), "스크랩하지 않은 영상입니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(data);
         }
 
@@ -76,12 +76,12 @@ public class ScrapServiceImpl implements ScrapService{
         scrapRepository.deleteByUserAndVideo(user, video);
 
         // 응답 반환
-        ApiResponse<String> data = ApiResponse.createSuccessWithoutData(HttpStatus.ACCEPTED.value(), "스크랩이 취소되었습니다.");
+        CustomApiResponse<String> data = CustomApiResponse.createSuccessWithoutData(HttpStatus.ACCEPTED.value(), "스크랩이 취소되었습니다.");
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(data);
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> getUserScrap(String userId, String type) {
+    public ResponseEntity<CustomApiResponse<?>> getUserScrap(String userId, String type) {
 
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
@@ -104,7 +104,7 @@ public class ScrapServiceImpl implements ScrapService{
         GetUserScrapDto.Res response = GetUserScrapDto.Res.builder().scraps(scraps).build();
 
         // 응답 반환
-        ApiResponse<GetUserScrapDto.Res> data = ApiResponse.createSuccessWithData(response, "스크랩 영상이 정상적으로 조회되었습니다.");
+        CustomApiResponse<GetUserScrapDto.Res> data = CustomApiResponse.createSuccessWithData(response, "스크랩 영상이 정상적으로 조회되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(data);
     }
 

@@ -2,7 +2,7 @@ package com.project.aminutesociety.timecalculator.controller;
 
 //import com.project.aminutesociety.timecalculator.dto.SetDistanceDto;
 import com.project.aminutesociety.timecalculator.service.TimeCalculatorService;
-import com.project.aminutesociety.util.response.ApiResponse;
+import com.project.aminutesociety.util.response.CustomApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
@@ -21,7 +21,7 @@ public class TimeCalculatorController {
 
     @Operation(summary = "거리별 소요시간 조회")
     @GetMapping("/get")
-    public ResponseEntity<ApiResponse<?>> getTime(@RequestParam String distance, @RequestParam String arrive) {
+    public ResponseEntity<CustomApiResponse<?>> getTime(@RequestParam String distance, @RequestParam String arrive) {
         return timeCalculatorService.getTime(distance, arrive);
 
     }
