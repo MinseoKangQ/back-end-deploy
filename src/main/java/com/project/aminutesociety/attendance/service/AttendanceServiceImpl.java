@@ -12,7 +12,7 @@ import com.project.aminutesociety.domain.Video;
 import com.project.aminutesociety.scrap.repository.ScrapRepository;
 import com.project.aminutesociety.user.repository.UserRepository;
 import com.project.aminutesociety.util.exception.EntityNotFoundException;
-import com.project.aminutesociety.util.response.ApiResponse;
+import com.project.aminutesociety.util.response.CustomApiResponse;
 import com.project.aminutesociety.video.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class AttendanceServiceImpl implements AttendanceService{
     private final ScrapRepository scrapRepository;
 
     @Override
-    public ResponseEntity<ApiResponse<?>> setSaveTime(String userId, SetAttendanceDto setAttendanceDto) {
+    public ResponseEntity<CustomApiResponse<?>> setSaveTime(String userId, SetAttendanceDto setAttendanceDto) {
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(userId + "인 사용자는 존재하지 않습니다."));
@@ -95,12 +95,12 @@ public class AttendanceServiceImpl implements AttendanceService{
         user.getAttendances().add(attendance);
         userRepository.save(user);
 
-        ApiResponse<String> response = ApiResponse.createSuccessWithoutData(201, "출석이 기록되었습니다.");
+        CustomApiResponse<String> response = CustomApiResponse.createSuccessWithoutData(201, "출석이 기록되었습니다.");
         return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> readAttendanceAll(String userId) {
+    public ResponseEntity<CustomApiResponse<?>> readAttendanceAll(String userId) {
 
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
@@ -129,12 +129,12 @@ public class AttendanceServiceImpl implements AttendanceService{
                 .calendar(attendanceResDtos)
                 .build();
 
-        ApiResponse<MyPageResDto> response = ApiResponse.createSuccessWithData(myPageResDto, "마이페이지 API 호출 성공");
+        CustomApiResponse<MyPageResDto> response = CustomApiResponse.createSuccessWithData(myPageResDto, "마이페이지 API 호출 성공");
         return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> readAttendance(String userId, String date) {
+    public ResponseEntity<CustomApiResponse<?>> readAttendance(String userId, String date) {
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(userId + "인 사용자는 존재하지 않습니다."));
@@ -142,7 +142,7 @@ public class AttendanceServiceImpl implements AttendanceService{
         // 해당 날짜의 출석 정보 가져오기
         Attendance attendance = attendanceRepository.findByUserAndDate(user, date);
         if (attendance == null) {
-            ApiResponse<String> response = ApiResponse.createFailWithoutData(200, "해당 날짜의 기록이 정상적으로 조회되었습니다.");
+            CustomApiResponse<String> response = CustomApiResponse.createFailWithoutData(200, "해당 날짜의 기록이 정상적으로 조회되었습니다.");
             return ResponseEntity.ok(response);
         }
 
@@ -169,7 +169,7 @@ public class AttendanceServiceImpl implements AttendanceService{
             myPageDetailResDtos.add(myPageDetailResDto);
         });
 
-        ApiResponse<List<MyPageDetailResDto>> response = ApiResponse.createSuccessWithData(myPageDetailResDtos, "해당 날짜의 기록이 정상적으로 조회되었습니다.");
+        CustomApiResponse<List<MyPageDetailResDto>> response = CustomApiResponse.createSuccessWithData(myPageDetailResDtos, "해당 날짜의 기록이 정상적으로 조회되었습니다.");
         return ResponseEntity.ok(response);
     }
 

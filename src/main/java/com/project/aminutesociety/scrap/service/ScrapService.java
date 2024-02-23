@@ -1,13 +1,13 @@
 package com.project.aminutesociety.scrap.service;
 
-import com.project.aminutesociety.util.response.ApiResponse;
+import com.project.aminutesociety.util.response.CustomApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface ScrapService {
 
-    ResponseEntity<ApiResponse<?>> createScrap(String userId, Long videoId);
-    ResponseEntity<ApiResponse<?>> deleteScrap(String userId, Long videoId);
-    ResponseEntity<ApiResponse<?>> getUserScrap(String userId, String type);
+    ResponseEntity<CustomApiResponse<?>> createScrap(String userId, Long videoId);
+    ResponseEntity<CustomApiResponse<?>> deleteScrap(String userId, Long videoId);
+    ResponseEntity<CustomApiResponse<?>> getUserScrap(String userId, String type);
 }

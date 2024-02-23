@@ -3,7 +3,7 @@ package com.project.aminutesociety.timecalculator.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.project.aminutesociety.util.response.ApiResponse;
+import com.project.aminutesociety.util.response.CustomApiResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ public class TimeCalculatorServiceImpl implements TimeCalculatorService{
     private String googleMapsApiKey;
 
     @Override
-    public ResponseEntity<ApiResponse<?>> getTime(String distance, String arrive) {
+    public ResponseEntity<CustomApiResponse<?>> getTime(String distance, String arrive) {
         String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&mode=transit&origins=" + distance + "&destinations=" + arrive + "&region=KR&key="+ googleMapsApiKey;
 
 
@@ -47,11 +47,11 @@ public class TimeCalculatorServiceImpl implements TimeCalculatorService{
             timeValue = firstElement.get("duration").get("value").asInt();
 
         } catch (Exception e) {
-            ApiResponse<String> res = ApiResponse.createFailWithoutData(400, "거리 측정에 실패하였습니다.");
+            CustomApiResponse<String> res = CustomApiResponse.createFailWithoutData(400, "거리 측정에 실패하였습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
         }
 
-        ApiResponse<Integer> res = ApiResponse.createSuccessWithData(timeValue, "거리 측정에 성공하였습니다.");
+        CustomApiResponse<Integer> res = CustomApiResponse.createSuccessWithData(timeValue, "거리 측정에 성공하였습니다.");
         return ResponseEntity.ok(res);
     }
 }

@@ -1,22 +1,17 @@
 package com.project.aminutesociety.user.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.project.aminutesociety.category.dto.CategoryResponseDto;
 import com.project.aminutesociety.user.dto.*;
 import com.project.aminutesociety.domain.User;
 import com.project.aminutesociety.user.repository.UserRepository;
 import com.project.aminutesociety.domain.UserCategory;
 import com.project.aminutesociety.util.exception.EntityNotFoundException;
-import com.project.aminutesociety.util.response.ApiResponse;
+import com.project.aminutesociety.util.response.CustomApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +25,12 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public ResponseEntity<ApiResponse<?>> signUp(UserSignUpDto.Req req) {
+    public ResponseEntity<CustomApiResponse<?>> signUp(UserSignUpDto.Req req) {
         Optional<User> optionalUser = userRepository.findUserByUserId(req.getUserId());
 
         // 이미 존재하는 회원인지 확인
         if(optionalUser.isPresent()) {
-            ApiResponse<UserSignUpDto.Res> res = ApiResponse.createFailWithoutData(400, "이미 아이디가 존재합니다.");
+            CustomApiResponse<UserSignUpDto.Res> res = CustomApiResponse.createFailWithoutData(400, "이미 아이디가 존재합니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
         }
 
@@ -52,12 +47,12 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         UserSignUpDto.Res data = new UserSignUpDto.Res(user.getId(), user.getUserName(), user.getUserId());
-        ApiResponse<UserSignUpDto.Res> res = ApiResponse.createSuccessWithData(data, "회원가입이 정상적으로 처리되었습니다.");
+        CustomApiResponse<UserSignUpDto.Res> res = CustomApiResponse.createSuccessWithData(data, "회원가입이 정상적으로 처리되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> login(UserLoginRequestDto userLoginRequestDto){
+    public ResponseEntity<CustomApiResponse<?>> login(UserLoginRequestDto userLoginRequestDto){
         String userId = userLoginRequestDto.getUserId();
 
         // 유저가 존재하는지 확인하고 유저 가져오기
@@ -68,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
         // 비밀번호가 일치하는지 확인
         if(!passwordEncoder.matches(userLoginRequestDto.getUserPw(), savedUserPW)){
-            ApiResponse<UserLoginResponseDto> res = ApiResponse.loginFailWithoutData(400, "비밀번호가 일치하지 않습니다.");
+            CustomApiResponse<UserLoginResponseDto> res = CustomApiResponse.loginFailWithoutData(400, "비밀번호가 일치하지 않습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
         }
 
@@ -83,12 +78,12 @@ public class UserServiceImpl implements UserService {
                 .userName(user.getUserName())
                 .build();
 
-        ApiResponse<UserLoginResponseDto> res = ApiResponse.loginSuccessWithoutData(userLoginResponseDto, "로그인이 완료되었습니다.");
+        CustomApiResponse<UserLoginResponseDto> res = CustomApiResponse.loginSuccessWithoutData(userLoginResponseDto, "로그인이 완료되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> checkUserId(String userId) {
+    public ResponseEntity<CustomApiResponse<?>> checkUserId(String userId) {
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(userId + "인 사용자는 존재하지 않습니다."));
@@ -100,12 +95,12 @@ public class UserServiceImpl implements UserService {
                 .userName(user.getUserName())
                 .build();
 
-        ApiResponse<UserLoginResponseDto> res = ApiResponse.checkUserIdSuccessWithData(userLoginResponseDto, "마이페이지 API 호출 성공");
+        CustomApiResponse<UserLoginResponseDto> res = CustomApiResponse.checkUserIdSuccessWithData(userLoginResponseDto, "마이페이지 API 호출 성공");
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> userInfo(String userId) {
+    public ResponseEntity<CustomApiResponse<?>> userInfo(String userId) {
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(userId + "인 사용자는 존재하지 않습니다."));
@@ -126,13 +121,13 @@ public class UserServiceImpl implements UserService {
                 .time(user.getTime())
                 .build();
 
-        ApiResponse<UesrInfoResponseDto> response = ApiResponse.checkUserIdSuccessWithData(userInfoResponseDto, "사용자 정보 조회가 완료되었습니다.");
+        CustomApiResponse<UesrInfoResponseDto> response = CustomApiResponse.checkUserIdSuccessWithData(userInfoResponseDto, "사용자 정보 조회가 완료되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> changeTime(String userId, ChangeTimeDto changeTimeDto) {
+    public ResponseEntity<CustomApiResponse<?>> changeTime(String userId, ChangeTimeDto changeTimeDto) {
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(userId + "인 사용자는 존재하지 않습니다."));
@@ -143,21 +138,21 @@ public class UserServiceImpl implements UserService {
         user.changeTime(time);
         userRepository.save(user);
 
-        ApiResponse<UesrInfoResponseDto> response = ApiResponse.createFailWithoutData(200, "시간 설정이 완료되었습니다.");
+        CustomApiResponse<UesrInfoResponseDto> response = CustomApiResponse.createFailWithoutData(200, "시간 설정이 완료되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
 
     // 회원 탈퇴
     @Override
-    public ResponseEntity<ApiResponse<?>> SignOut(String userId) {
+    public ResponseEntity<CustomApiResponse<?>> SignOut(String userId) {
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(userId + "인 사용자는 존재하지 않습니다."));
 
         userRepository.delete(user);
 
-        ApiResponse<String> response = ApiResponse.createFailWithoutData(202, "회원탈퇴가 정상적으로 처리되었습니다.");
+        CustomApiResponse<String> response = CustomApiResponse.createFailWithoutData(202, "회원탈퇴가 정상적으로 처리되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
