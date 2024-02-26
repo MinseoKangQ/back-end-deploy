@@ -32,12 +32,15 @@ public class User extends BaseEntity {
     private String arrive; // 도착지
     private Integer savedTime; // 절약한 시간
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<UserCategory> userCategories = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Scrap> scraps = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Attendance> attendances = new ArrayList<>();
 

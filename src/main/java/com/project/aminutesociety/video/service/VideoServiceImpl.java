@@ -6,7 +6,7 @@ import com.project.aminutesociety.domain.UserCategory;
 import com.project.aminutesociety.domain.Video;
 import com.project.aminutesociety.user.repository.UserRepository;
 import com.project.aminutesociety.util.exception.EntityNotFoundException;
-import com.project.aminutesociety.util.response.ApiResponse;
+import com.project.aminutesociety.util.response.CustomApiResponse;
 import com.project.aminutesociety.video.dto.EditRecommendVideo;
 import com.project.aminutesociety.video.dto.RecommendVideo;
 import com.project.aminutesociety.video.repository.VideoRepository;
@@ -28,7 +28,7 @@ public class VideoServiceImpl implements VideoService{
     private final UserRepository userRepository;
 
     @Override
-    public ResponseEntity<ApiResponse<?>> recommendVideo(String userId, Integer time) {
+    public ResponseEntity<CustomApiResponse<?>> recommendVideo(String userId, Integer time) {
 
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
@@ -74,12 +74,12 @@ public class VideoServiceImpl implements VideoService{
         RecommendVideo.Res responseDto = new RecommendVideo.Res();
         responseDto.setVideos(recommendVideoDtos);
 
-        ApiResponse<RecommendVideo.Res> response = ApiResponse.createSuccessWithData(responseDto, "영상 추천에 성공하였습니다.");
+        CustomApiResponse<RecommendVideo.Res> response = CustomApiResponse.createSuccessWithData(responseDto, "영상 추천에 성공하였습니다.");
         return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> editRecommendVideo(String userId, Integer time, EditRecommendVideo.Req req) {
+    public ResponseEntity<CustomApiResponse<?>> editRecommendVideo(String userId, Integer time, EditRecommendVideo.Req req) {
 
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
@@ -131,12 +131,12 @@ public class VideoServiceImpl implements VideoService{
         }
 
         // 응답 반환
-        ApiResponse<EditRecommendVideo.Res> apiResponse = ApiResponse.createSuccessWithData(response, "영상 추천에 성공하였습니다.");
-        return ResponseEntity.ok(apiResponse);
+        CustomApiResponse<EditRecommendVideo.Res> customApiResponse = CustomApiResponse.createSuccessWithData(response, "영상 추천에 성공하였습니다.");
+        return ResponseEntity.ok(customApiResponse);
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> getVideoRecommend(String userId) {
+    public ResponseEntity<CustomApiResponse<?>> getVideoRecommend(String userId) {
 
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
@@ -184,7 +184,7 @@ public class VideoServiceImpl implements VideoService{
         responseDto.setVideos(recommendVideoDtos);
 
         // 응답 반환
-        ApiResponse<RecommendVideo.Res> response = ApiResponse.createSuccessWithData(responseDto, "영상 추천에 성공하였습니다.");
+        CustomApiResponse<RecommendVideo.Res> response = CustomApiResponse.createSuccessWithData(responseDto, "영상 추천에 성공하였습니다.");
         return ResponseEntity.ok(response);
 
     }

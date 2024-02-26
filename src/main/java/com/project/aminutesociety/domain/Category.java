@@ -23,6 +23,7 @@ public class Category extends BaseEntity {
     @Column(name = "category_name")
     private String name; // 카테고리명
 
+    @Builder.Default
     @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<UserCategory> userCategories = new ArrayList<>();
 }

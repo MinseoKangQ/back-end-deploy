@@ -1,6 +1,6 @@
 package com.project.aminutesociety.util.exception;
 
-import com.project.aminutesociety.util.response.ApiResponse;
+import com.project.aminutesociety.util.response.CustomApiResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -16,40 +16,40 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<?>> handleMethodArgumentNotValidationException(MethodArgumentNotValidException e) {
+    public ResponseEntity<CustomApiResponse<?>> handleMethodArgumentNotValidationException(MethodArgumentNotValidException e) {
         String errorMessage = e.getBindingResult().getAllErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining("; "));
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.createFailWithoutData(HttpStatus.BAD_REQUEST.value(), errorMessage));
+                .body(CustomApiResponse.createFailWithoutData(HttpStatus.BAD_REQUEST.value(), errorMessage));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ApiResponse<?>> handleConstraintViolationException(ConstraintViolationException e) {
+    public ResponseEntity<CustomApiResponse<?>> handleConstraintViolationException(ConstraintViolationException e) {
         String errorMessage = e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining("; "));
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.createFailWithoutData(HttpStatus.BAD_REQUEST.value(), errorMessage));
+                .body(CustomApiResponse.createFailWithoutData(HttpStatus.BAD_REQUEST.value(), errorMessage));
     }
 
     // Custom Exception
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ApiResponse<?>> handleEntityNotFoundException(EntityNotFoundException e) {
+    public ResponseEntity<CustomApiResponse<?>> handleEntityNotFoundException(EntityNotFoundException e) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.createFailWithoutData(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+                .body(CustomApiResponse.createFailWithoutData(HttpStatus.NOT_FOUND.value(), e.getMessage()));
     }
 
     @ExceptionHandler(EntityDuplicatedException.class)
-    public ResponseEntity<ApiResponse<?>> handleEntityDuplicatedException(EntityDuplicatedException e) {
+    public ResponseEntity<CustomApiResponse<?>> handleEntityDuplicatedException(EntityDuplicatedException e) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(ApiResponse.createFailWithoutData(HttpStatus.CONFLICT.value(), e.getMessage()));
+                .body(CustomApiResponse.createFailWithoutData(HttpStatus.CONFLICT.value(), e.getMessage()));
     }
 
 }

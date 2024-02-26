@@ -13,6 +13,7 @@ public class GetUserScrapDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Res {
+        @Builder.Default
         List<ScrapList> scraps = new ArrayList<>();
 
         @Getter
@@ -25,13 +26,15 @@ public class GetUserScrapDto {
             private String videoTitle;
             private String videoRunTime;
             private String url;
+            private String thumbnail;
 
             public static ScrapList EntityToDto(Scrap scrap) {
                 return ScrapList.builder()
-                        .categoryId(scrap.getVideo().getId())
+                        .categoryId(scrap.getVideo().getCategory().getId())
                         .videoId(scrap.getVideo().getId())
                         .videoTitle(scrap.getVideo().getTitle())
                         .url(scrap.getVideo().getUrl())
+                        .thumbnail(scrap.getVideo().getThumbnail())
                         .videoRunTime(formatRunTime(scrap.getVideo().getRunTime()))
                         .build();
             }

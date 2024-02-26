@@ -4,13 +4,11 @@ import com.project.aminutesociety.category.dto.CategoryResponseDto;
 import com.project.aminutesociety.category.dto.CategorySetDto;
 import com.project.aminutesociety.domain.Category;
 import com.project.aminutesociety.category.repository.CategoryRepository;
-import com.project.aminutesociety.domain.Video;
-import com.project.aminutesociety.user.dto.UserSignUpDto;
 import com.project.aminutesociety.domain.User;
 import com.project.aminutesociety.user.repository.UserRepository;
 import com.project.aminutesociety.domain.UserCategory;
 import com.project.aminutesociety.util.exception.EntityNotFoundException;
-import com.project.aminutesociety.util.response.ApiResponse;
+import com.project.aminutesociety.util.response.CustomApiResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static java.lang.Long.valueOf;
 
@@ -31,7 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     // 카테고리 전체 응답
     @Override
-    public ResponseEntity<ApiResponse<?>> readCategories() {
+    public ResponseEntity<CustomApiResponse<?>> readCategories() {
         List<Category> categories = categoryRepository.findAll();
         List<CategoryResponseDto> categoryResponseDtos = new ArrayList<>();
 
@@ -43,14 +40,14 @@ public class CategoryServiceImpl implements CategoryService {
             categoryResponseDtos.add(categoryResponseDto);
         }
 
-        ApiResponse<List<CategoryResponseDto>> res = ApiResponse.readCategoriesSuccessWithData(categoryResponseDtos, "카테고리 조회가 완료되었습니다.");
+        CustomApiResponse<List<CategoryResponseDto>> res = CustomApiResponse.readCategoriesSuccessWithData(categoryResponseDtos, "카테고리 조회가 완료되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     // 관심있는 분야 설정
     @Override
     @Transactional
-    public ResponseEntity<ApiResponse<?>> setCateogires(String userId, CategorySetDto categorySetDto) {
+    public ResponseEntity<CustomApiResponse<?>> setCateogires(String userId, CategorySetDto categorySetDto) {
 
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
@@ -76,12 +73,12 @@ public class CategoryServiceImpl implements CategoryService {
             user.getUserCategories().add(userCategory);
         }
 
-        ApiResponse<String> response = ApiResponse.createSuccessWithoutData(201, "카테고리 설정이 완료되었습니다.");
+        CustomApiResponse<String> response = CustomApiResponse.createSuccessWithoutData(201, "카테고리 설정이 완료되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> changeCategories(String userId, CategorySetDto categorySetDto) {
+    public ResponseEntity<CustomApiResponse<?>> changeCategories(String userId, CategorySetDto categorySetDto) {
 
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
@@ -111,7 +108,7 @@ public class CategoryServiceImpl implements CategoryService {
             user.getUserCategories().add(userCategory);
         }
 
-        ApiResponse<String> response = ApiResponse.createSuccessWithoutData(200, "카테고리 수정이 완료되었습니다.");
+        CustomApiResponse<String> response = CustomApiResponse.createSuccessWithoutData(200, "카테고리 수정이 완료되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

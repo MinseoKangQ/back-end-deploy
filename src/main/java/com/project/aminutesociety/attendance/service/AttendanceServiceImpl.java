@@ -12,9 +12,10 @@ import com.project.aminutesociety.domain.Video;
 import com.project.aminutesociety.scrap.repository.ScrapRepository;
 import com.project.aminutesociety.user.repository.UserRepository;
 import com.project.aminutesociety.util.exception.EntityNotFoundException;
-import com.project.aminutesociety.util.response.ApiResponse;
+import com.project.aminutesociety.util.response.CustomApiResponse;
 import com.project.aminutesociety.video.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.util.List;
 import static java.lang.Long.valueOf;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AttendanceServiceImpl implements AttendanceService{
     private final AttendanceRepository attendanceRepository;
@@ -34,7 +36,7 @@ public class AttendanceServiceImpl implements AttendanceService{
     private final ScrapRepository scrapRepository;
 
     @Override
-    public ResponseEntity<ApiResponse<?>> setSaveTime(String userId, SetAttendanceDto setAttendanceDto) {
+    public ResponseEntity<CustomApiResponse<?>> setSaveTime(String userId, SetAttendanceDto setAttendanceDto) {
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(userId + "인 사용자는 존재하지 않습니다."));
@@ -46,7 +48,7 @@ public class AttendanceServiceImpl implements AttendanceService{
 
         // 날짜 중복 확인
         String date = formatDate();
-        Attendance attendance = attendanceRepository.findByDate(date);
+        Attendance attendance = attendanceRepository.findByUserAndDate(user, date);
 
         // 존재하지 않을 경우
         if(attendance == null) {
@@ -93,12 +95,12 @@ public class AttendanceServiceImpl implements AttendanceService{
         user.getAttendances().add(attendance);
         userRepository.save(user);
 
-        ApiResponse<String> response = ApiResponse.createSuccessWithoutData(201, "출석이 기록되었습니다.");
+        CustomApiResponse<String> response = CustomApiResponse.createSuccessWithoutData(201, "출석이 기록되었습니다.");
         return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> readAttendanceAll(String userId) {
+    public ResponseEntity<CustomApiResponse<?>> readAttendanceAll(String userId) {
 
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
@@ -108,6 +110,7 @@ public class AttendanceServiceImpl implements AttendanceService{
 
         // 유저의 모든 출석 가져오기
         List<Attendance> attendances = attendanceRepository.findByUser(user);
+
 
         attendances.forEach( attendance -> {
             // Dto로 변환
@@ -119,25 +122,28 @@ public class AttendanceServiceImpl implements AttendanceService{
             attendanceResDtos.add(attendanceResDto);
         });
 
+        int saveTime = user.getSavedTime() == null ? 0 : user.getSavedTime();
+
         MyPageResDto myPageResDto = MyPageResDto.builder()
-                .totalTime(formatTimeIncludeHour(user.getSavedTime()))
+                .totalTime(formatTimeIncludeHour(saveTime))
                 .calendar(attendanceResDtos)
                 .build();
 
-        ApiResponse<MyPageResDto> response = ApiResponse.createSuccessWithData(myPageResDto, "마이페이지 API 호출 성공");
+        CustomApiResponse<MyPageResDto> response = CustomApiResponse.createSuccessWithData(myPageResDto, "마이페이지 API 호출 성공");
         return ResponseEntity.ok(response);
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> readAttendance(String userId, String date) {
+    public ResponseEntity<CustomApiResponse<?>> readAttendance(String userId, String date) {
         // 유저가 존재하는지 확인하고 유저 가져오기
         User user = userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(userId + "인 사용자는 존재하지 않습니다."));
 
         // 해당 날짜의 출석 정보 가져오기
-        Attendance attendance = attendanceRepository.findByDate(date);
+        Attendance attendance = attendanceRepository.findByUserAndDate(user, date);
         if (attendance == null) {
-            throw new EntityNotFoundException(date + "일에 대한 출석 정보를 찾을 수 없습니다.");
+            CustomApiResponse<String> response = CustomApiResponse.createFailWithoutData(200, "해당 날짜의 기록이 정상적으로 조회되었습니다.");
+            return ResponseEntity.ok(response);
         }
 
         // 출석 정보에 연결된 모든 비디오 가져오기
@@ -147,6 +153,7 @@ public class AttendanceServiceImpl implements AttendanceService{
         attendanceVideos.forEach( attendanceVideo -> {
             Video video = attendanceVideo.getVideo();
 
+            log.error(video.getTitle());
             // 스크랩  여부 설정
             boolean isScrap = scrapRepository.findByUserAndVideo(user, video).isPresent() ? true : false;
 
@@ -162,7 +169,7 @@ public class AttendanceServiceImpl implements AttendanceService{
             myPageDetailResDtos.add(myPageDetailResDto);
         });
 
-        ApiResponse<List<MyPageDetailResDto>> response = ApiResponse.createSuccessWithData(myPageDetailResDtos, "해당 날짜의 기록이 정상적으로 조회되었습니다.");
+        CustomApiResponse<List<MyPageDetailResDto>> response = CustomApiResponse.createSuccessWithData(myPageDetailResDtos, "해당 날짜의 기록이 정상적으로 조회되었습니다.");
         return ResponseEntity.ok(response);
     }
 
